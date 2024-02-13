@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "374914241905",
+    "project_id": "fyp-app-flutter",
+    "storage_bucket": "fyp-app-flutter.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:374914241905:android:a2a901e00b4eb22a8012d0",
+        "android_client_info": {
+          "package_name": "com.example.fypapp"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDibX1NPJDd03f2tO0fEOgd6piuXZHtKgw"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

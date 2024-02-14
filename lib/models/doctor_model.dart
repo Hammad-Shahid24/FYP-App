@@ -1,13 +1,17 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
+
 class DoctorModel {
   final String id;
   final String name;
   final String regNumber;
   final String specialization;
   final String hospitalId;
+  final String hospitalName;
+  final String availability;
   // final String image;
   // final String rating;
-  final String dutyStartTime;
-  final String dutyEndTime;
+  final Timestamp dutyStartTime;
+  final Timestamp dutyEndTime;
 
   DoctorModel({
     required this.id,
@@ -15,37 +19,25 @@ class DoctorModel {
     required this.regNumber,
     required this.specialization,
     required this.hospitalId,
+    required this.hospitalName,
+    required this.availability,
     // required this.image,
     // required this.rating,
     required this.dutyStartTime,
     required this.dutyEndTime,
   });
 
-  factory DoctorModel.fromJson(Map<String, dynamic> json) {
+  factory DoctorModel.fromJson(Map<String, dynamic> doc) {
     return DoctorModel(
-      id: json['id'],
-      name: json['name'],
-      regNumber: json['regNumber'],
-      specialization: json['specialization'],
-      hospitalId: json['hospitalId'],
-      // image: json['image'],
-      // rating: json['rating'],
-      dutyStartTime: json['dutyStartTime'],
-      dutyEndTime: json['dutyEndTime'],
-    );
-  }
-
-  Map<String, dynamic> toJson() {
-    return {
-      'id': id,
-      'name': name,
-      'regNumber': regNumber,
-      'specialization': specialization,
-      'hospitalId': hospitalId,
-      // 'image': image,
-      // 'rating': rating,
-      'dutyStartTime': dutyStartTime,
-      'dutyEndTime': dutyEndTime,
-    };
+          id: doc['id'],
+          name: doc['name'],
+          regNumber: doc['reg_number'],
+          specialization: doc['specialization'],
+          hospitalId: doc['hospital_id'],
+          hospitalName: doc['hospital_name'],
+          availability: doc['availability'],
+          dutyStartTime: doc['duty_start_time'],
+          dutyEndTime: doc['duty_end_time'],
+        );
   }
 }

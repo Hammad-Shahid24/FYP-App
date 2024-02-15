@@ -1,7 +1,9 @@
-const signUpeRoute = '/signUp/';
-const signInRoute = '/signIn/';
-const homeRoute = '/home/';
-const adminRoute = '/admin/';
-const deanRoute = '/dean/';
-const doctorRoute = '/doctor/';
-const patientRoute = '/patient/';
+const String signUpeRoute = '/signUp/';
+const String signInRoute = '/signIn/';
+const String homeRoute = '/home/';
+const String adminRoute = '/admin/';
+const String deanRoute = '/dean/';
+const String doctorRoute = '/doctor/';
+const String patientRoute = '/patient/';
+const String verifyEmailRoute = '/verifyEmail';
+const String loadingViewRoute = '/loadingView';

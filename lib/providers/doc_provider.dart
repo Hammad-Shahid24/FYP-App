@@ -12,8 +12,4 @@ class DocProvider extends ChangeNotifier {
     return _docDatabaseHelper.getDoctors();
   }
 
-  void getHospitalName() {
-    // _docDatabaseHelper.getHospitalName();
-  }
-
 }

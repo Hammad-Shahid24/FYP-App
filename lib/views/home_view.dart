@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:fypapp/components/doc_card.dart';
 import 'package:fypapp/models/doctor_model.dart';
 import 'package:provider/provider.dart';
-
 import '../providers/doc_provider.dart';
 
 class HomeView extends StatelessWidget {
@@ -12,7 +11,7 @@ class HomeView extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Doctor\'s List'),
+        title: const Text('Patient\'s List'),
         centerTitle: true,
       ),
       body: StreamBuilder<List<DoctorModel>>(
@@ -33,8 +32,9 @@ class HomeView extends StatelessWidget {
                       availability: doctor.availability,
                       dutyStartTime: doctor.dutyStartTime,
                       dutyEndTime: doctor.dutyEndTime,
-                      hospitalName: doctor.hospitalName, ontap: () {
-                    context.read<DocProvider>().getHospitalName();
+                      hospitalName: doctor.hospitalName,
+                    ontap: () {
+
                     },);
                 }
             );

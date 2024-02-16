@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:fypapp/services/auth/auth_service.dart';
+import 'package:fypapp/services/shared_preferences/sp_service.dart';
 
 import '../constants/routes.dart';
 
@@ -36,8 +37,9 @@ class VerifyEmailView extends StatelessWidget {
                 onPressed: () async {
                   final user = AuthService.firebase().currentUser;
                   if (user?.isEmailVerified == true) {
+                    SharedPreferencesService.start().saveAuthId(user!.uid!);
                     Navigator.of(context).pushNamedAndRemoveUntil(
-                      homeRoute,
+                      patientHomeRoute,
                       (route) => false,
                     );
                   } else if (user?.isEmailVerified == false) {

@@ -2,11 +2,11 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 
 class PatientModel {
   final String id;
-  final String username;
+  late final String username;
   final String firstName;
   final String lastName;
-  final int age;
-  final String gender;
+  late final int age;
+  late final String gender;
   final bool isVerified;
   final Timestamp createdAt;
   final Timestamp updatedAt;

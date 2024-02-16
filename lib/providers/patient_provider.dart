@@ -1,6 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:fypapp/models/patient_model.dart';
-import 'package:fypapp/services/patient_database_helper.dart';
+import 'package:fypapp/services/database/patient_database_helper.dart';
 
 class PatientProvider extends ChangeNotifier{
   final PatientDatabaseHelper _databaseHelper;

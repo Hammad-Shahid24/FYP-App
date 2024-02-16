@@ -45,8 +45,8 @@ class SignUpView extends StatelessWidget {
                         suffixIcon: IconButton(
                           icon: Icon(
                             obscureText
-                                ? Icons.visibility
-                                : Icons.visibility_off,
+                                ? Icons.visibility_off
+                                : Icons.visibility,
                           ),
                           onPressed: () {
                             setState(() {

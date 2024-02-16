@@ -46,8 +46,8 @@ class SignInView extends StatelessWidget {
                         suffixIcon: IconButton(
                           icon: Icon(
                             obscureText
-                                ? Icons.visibility
-                                : Icons.visibility_off,
+                                ? Icons.visibility_off
+                                : Icons.visibility,
                           ),
                           onPressed: () {
                             setState(() {
@@ -69,7 +69,7 @@ class SignInView extends StatelessWidget {
                         password: passwordController.text,
                       );
                       Navigator.of(context).pushNamedAndRemoveUntil(
-                        homeRoute, (route) => false,);
+                        patientHomeRoute, (route) => false,);
                     } catch (e) {
                       showDialog(
                         context: context,

@@ -1,6 +1,6 @@
 const String signUpeRoute = '/signUp/';
 const String signInRoute = '/signIn/';
-const String homeRoute = '/home/';
+const String patientHomeRoute = '/patientHome/';
 const String adminRoute = '/admin/';
 const String deanRoute = '/dean/';
 const String doctorRoute = '/doctor/';

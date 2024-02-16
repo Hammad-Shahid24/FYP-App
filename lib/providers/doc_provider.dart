@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:fypapp/services/doc_database_helper.dart';
+import 'package:fypapp/services/database/doc_database_helper.dart';
 
 import '../models/doctor_model.dart';
 

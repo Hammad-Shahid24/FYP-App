@@ -1,11 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:fypapp/providers/doc_provider.dart';
 import 'package:fypapp/providers/patient_provider.dart';
-import 'package:fypapp/providers/shared_preferences_provider.dart';
 import 'package:fypapp/services/auth/auth_service.dart';
-import 'package:fypapp/services/doc_database_helper.dart';
-import 'package:fypapp/services/patient_database_helper.dart';
-import 'package:fypapp/views/home_view.dart';
+import 'package:fypapp/services/database/doc_database_helper.dart';
+import 'package:fypapp/services/database/patient_database_helper.dart';
+import 'package:fypapp/services/shared_preferences/sp_service.dart';
+import 'package:fypapp/views/patient_form_view.dart';
+import 'package:fypapp/views/patient_home_view.dart';
 import 'package:fypapp/views/loading_view.dart';
 import 'package:fypapp/views/signin_view.dart';
 import 'package:fypapp/views/signup_view.dart';
@@ -25,9 +26,8 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MultiProvider(
         providers: [
-          ChangeNotifierProvider(create: (context) => DocProvider(DocDatabaseHelper())),
           ChangeNotifierProvider(create: (context) => PatientProvider(PatientDatabaseHelper())),
-          ChangeNotifierProvider(create: (context) => SharedPreferencesProvider()),
+          ChangeNotifierProvider(create: (context) => DocProvider(DocDatabaseHelper())),
         ],
     child: MaterialApp(
         debugShowCheckedModeBanner: false,
@@ -40,7 +40,7 @@ class MyApp extends StatelessWidget {
         routes: {
     signInRoute: (context) => const SignInView(),
     signUpeRoute: (context) => const SignUpView(),
-    homeRoute: (context) => const HomeView(),
+    patientHomeRoute: (context) => const PatientHomeView(),
     verifyEmailRoute: (context) => const VerifyEmailView(),
     loadingViewRoute: (context) => const LoadingView(),
     },
@@ -52,7 +52,7 @@ class MyApp extends StatelessWidget {
         final user = AuthService.firebase().currentUser;
         if (user != null){
           if (user.isEmailVerified) {
-          return const HomeView();
+          return PatientForm();
           } else {
           return const VerifyEmailView();
           }

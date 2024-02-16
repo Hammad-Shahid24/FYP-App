@@ -4,14 +4,14 @@ import 'package:fypapp/models/doctor_model.dart';
 import 'package:provider/provider.dart';
 import '../providers/doc_provider.dart';
 
-class HomeView extends StatelessWidget {
-  const HomeView({super.key});
+class PatientHomeView extends StatelessWidget {
+  const PatientHomeView({super.key});
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Patient\'s List'),
+        title: const Text('Patient\'s View'),
         centerTitle: true,
       ),
       body: StreamBuilder<List<DoctorModel>>(

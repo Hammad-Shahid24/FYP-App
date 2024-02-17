@@ -7,7 +7,7 @@ import 'package:fypapp/services/shared_preferences/sp_service.dart';
 import 'package:provider/provider.dart';
 
 class DifferentUserSelectionView extends StatelessWidget {
-  const DifferentUserSelectionView({Key? key});
+  const DifferentUserSelectionView({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -37,7 +37,6 @@ class DifferentUserSelectionView extends StatelessWidget {
                                 .patientExists();
 
                             SharedPreferencesService.start().saveIsPatient(res);
-                            print("res: $res");
                           } finally {
                             value.setLoading(false);
                             Navigator.pushNamedAndRemoveUntil(
@@ -59,8 +58,7 @@ class DifferentUserSelectionView extends StatelessWidget {
                                 .doctorExists();
                             if (res) {
                               SharedPreferencesService.start().saveIsPatient(res);
-                              SharedPreferencesService.start().isFormFilled(true);
-                              print("res: $res");
+                              SharedPreferencesService.start().saveIsFormFilled(true);
                             }
 
                           } finally {

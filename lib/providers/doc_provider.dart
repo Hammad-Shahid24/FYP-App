@@ -12,6 +12,10 @@ class DocProvider extends ChangeNotifier {
     return _docDatabaseHelper.getDoctors();
   }
 
+  Future<DoctorModel> getDoc(String doctorId) {
+    return _docDatabaseHelper.getDoc(doctorId);
+  }
+
   Future<bool> doctorExists() async {
     return _docDatabaseHelper.doctorExists();
   }

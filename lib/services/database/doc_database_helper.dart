@@ -15,6 +15,12 @@ class DocDatabaseHelper {
     });
   }
 
+  Future<DoctorModel> getDoc(String doctorId) async {
+    final docRef = _firestore.collection(_docCollection).doc(doctorId);
+    final snapshot = await docRef.get();
+    return DoctorModel.fromJson(snapshot.data() as Map<String, dynamic>);
+  }
+
   // this will come in handy in the DifferentUserView
   Future<bool> doctorExists() async {
     // Replace with the actual doctor collection path and authentication logic

@@ -1,8 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:fypapp/providers/appointment_provider.dart';
 import 'package:fypapp/providers/doc_provider.dart';
 import 'package:fypapp/providers/loading_screen_provider.dart';
 import 'package:fypapp/providers/patient_provider.dart';
+import 'package:fypapp/providers/signin_helper_provider.dart';
 import 'package:fypapp/services/auth/auth_service.dart';
+import 'package:fypapp/services/database/appointment_database_service.dart';
 import 'package:fypapp/services/database/doc_database_helper.dart';
 import 'package:fypapp/services/database/patient_database_helper.dart';
 import 'package:fypapp/services/shared_preferences/sp_service.dart';
@@ -29,63 +32,65 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MultiProvider(
         providers: [
-          ChangeNotifierProvider(create: (context) => PatientProvider(PatientDatabaseHelper())),
-          ChangeNotifierProvider(create: (context) => DocProvider(DocDatabaseHelper())),
+          ChangeNotifierProvider(create: (context) => SignInHelperProvider(SharedPreferencesService())),
+          ChangeNotifierProvider(
+              create: (context) =>
+                  AppointmentProvider(AppointmentDatabaseService())),
+          ChangeNotifierProvider(
+              create: (context) => PatientProvider(PatientDatabaseHelper())),
+          ChangeNotifierProvider(
+              create: (context) => DocProvider(DocDatabaseHelper())),
           ChangeNotifierProvider(create: (context) => LoadingScreenProvider()),
         ],
-    child: MaterialApp(
-        debugShowCheckedModeBanner: false,
-        title: 'Flutter Demo',
-        theme: ThemeData(
-        colorScheme: const ColorScheme.light(),
-        useMaterial3: true,
-        ),
-
-        routes: {
-          signInRoute: (context) => const SignInView(),
-          signUpeRoute: (context) => const SignUpView(),
-          patientHomeRoute: (context) => const PatientHomeView(),
-          verifyEmailRoute: (context) => const VerifyEmailView(),
-          loadingViewRoute: (context) => const LoadingView(),
-          patientFormRoute: (context) => const PatientFormView(),
-          doctorHomeRoute: (context) => const DoctorHomeView(),
-          differentUsersSelectionRoute: (context) => const DifferentUserSelectionView(),
-    },
-    home: FutureBuilder(
-      future: AuthService.firebase().initialize(),
-      builder: (context, snapshot) {
-        switch (snapshot.connectionState) {
-          case ConnectionState.done:
-            final user = AuthService.firebase().currentUser;
-            if (user != null) {
-              if (user.isEmailVerified) {
-                if (SharedPreferencesService.formFilled) {
-                  if (SharedPreferencesService.userIsPatient) {
-                    return const PatientHomeView();
-                  } else if (SharedPreferencesService.userIsPatient){
-                    return const DoctorHomeView();
-                  } else {
-                    return const DifferentUserSelectionView();
-                  }
-                } else {
-                  return const PatientFormView(); // Navigate to form view if form is not filled
+        child: MaterialApp(
+            debugShowCheckedModeBanner: false,
+            title: 'Flutter Demo',
+            theme: ThemeData(
+              colorScheme: const ColorScheme.light(),
+              useMaterial3: true,
+            ),
+            routes: {
+              signInRoute: (context) => const SignInView(),
+              signUpeRoute: (context) => const SignUpView(),
+              patientHomeRoute: (context) => const PatientHomeView(),
+              verifyEmailRoute: (context) => const VerifyEmailView(),
+              loadingViewRoute: (context) => const LoadingView(),
+              patientFormRoute: (context) => const PatientFormView(),
+              doctorHomeRoute: (context) => const DoctorHomeView(),
+              differentUsersSelectionRoute: (context) =>
+                  const DifferentUserSelectionView(),
+            },
+            home: FutureBuilder(
+              future: AuthService.firebase().initialize(),
+              builder: (context, snapshot) {
+                switch (snapshot.connectionState) {
+                  case ConnectionState.done:
+                    final user = AuthService.firebase().currentUser;
+                    if (user != null) {
+                      if (user.isEmailVerified) {
+                        if (context.watch<SignInHelperProvider>().isFormFilled) {
+                          return context.watch<SignInHelperProvider>().isPatient
+                              ? const PatientHomeView()
+                              : const DoctorHomeView();
+                        } else {
+                          return const PatientFormView();
+                        }
+                      } else {
+                        return const VerifyEmailView();
+                      }
+                    } else {
+                      return const SignInView();
+                    } // No need to cast as widget
+                  case ConnectionState.waiting:
+                    // this finally worked
+                    context.read<SignInHelperProvider>().initializeVariables();
+                    return const LoadingView();
+                  case ConnectionState.active:
+                    return const SignUpView();
+                  case ConnectionState.none:
+                    return const LoadingView();
                 }
-              } else {
-                return const VerifyEmailView();
-              }
-            } else {
-              return const SignInView();
-            }
-          case ConnectionState.waiting:
-            return const LoadingView();
-          case ConnectionState.active:
-            return const SignUpView();
-          case ConnectionState.none:
-            return const LoadingView();
-        }
-  },
-)
-    )
-    );
+              },
+            )));
   }
 }

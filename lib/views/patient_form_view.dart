@@ -1,3 +1,4 @@
+
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:fypapp/constants/routes.dart';
@@ -183,7 +184,7 @@ class _PatientFormViewState extends State<PatientFormView> {
                       phoneNumber: _phoneNumber,
                     );
                     context.read<PatientProvider>().addPatient(patient);
-                    SharedPreferencesService.start().isFormFilled(true);
+                    SharedPreferencesService.start().saveIsFormFilled(true);
                     Navigator.of(context).pushNamedAndRemoveUntil(
                         patientHomeRoute, (route) => false);
                   }
@@ -194,6 +195,12 @@ class _PatientFormViewState extends State<PatientFormView> {
                 ),
                 child: const Text('Submit'),
               ),
+              ElevatedButton(
+                onPressed: () async {
+
+                },
+                child: Text('please work'),
+              )
               // ElevatedButton(
               //     onPressed: () async {
               //       // if (Theme.of(context).platform == TargetPlatform.android) {

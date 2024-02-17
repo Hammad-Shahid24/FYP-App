@@ -26,5 +26,8 @@ class PatientProvider extends ChangeNotifier{
     notifyListeners();
   }
 
+  Future<bool> patientExists() async {
+    return _databaseHelper.patientExists();
+  }
 
 }

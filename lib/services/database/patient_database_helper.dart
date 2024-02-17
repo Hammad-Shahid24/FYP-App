@@ -1,5 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:fypapp/models/patient_model.dart';
+import 'package:fypapp/services/shared_preferences/sp_service.dart';
 
 class PatientDatabaseHelper{
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
@@ -15,12 +16,9 @@ class PatientDatabaseHelper{
   }
 
   Future<void> addPatient(PatientModel patient) async {
-    final docRef = await _firestore.collection(_patientCollection).add(patient.toJson());
-    final id = docRef.id;
-    print(docRef);
-    docRef.update({
-      'id': id
-    });
+    await _firestore.collection(_patientCollection)
+        .doc(await SharedPreferencesService().getUserId)
+        .set(patient.toJson());
   }
 
   Future<void> removePatient(String id) async {
@@ -31,5 +29,14 @@ class PatientDatabaseHelper{
     await _firestore.collection(_patientCollection).doc(patient.id).update(patient.toJson());
   }
 
+  Future<bool> patientExists() async {
+    // Replace with the actual doctor collection path and authentication logic
+    final doctorRef = _firestore.collection(_patientCollection)
+        .doc(await SharedPreferencesService().getUserId);
+
+    // Replace with the appropriate field name and condition for checking doctor existence
+    final snapshot = await doctorRef.get();
+    return snapshot.exists; // Assuming `doctorId` is the unique identifier
+  }
 
 }

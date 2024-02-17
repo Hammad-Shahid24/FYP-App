@@ -38,8 +38,9 @@ class VerifyEmailView extends StatelessWidget {
                   final user = AuthService.firebase().currentUser;
                   if (user?.isEmailVerified == true) {
                     SharedPreferencesService.start().saveAuthId(user!.uid!);
+                    SharedPreferencesService.start().saveIsPatient(true);
                     Navigator.of(context).pushNamedAndRemoveUntil(
-                      patientHomeRoute,
+                      patientFormRoute,
                       (route) => false,
                     );
                   } else if (user?.isEmailVerified == false) {
@@ -67,7 +68,8 @@ class VerifyEmailView extends StatelessWidget {
                     );
                   }
                 },
-                child: const Text("Press here After verifying your email Address")),
+                child: const Text(
+                    "Press here After verifying your email Address")),
             ElevatedButton(
                 onPressed: () async {
                   await AuthService.firebase().logOut();

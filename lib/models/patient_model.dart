@@ -2,7 +2,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 
 class PatientModel {
   final String id;
-  late final String username;
+  late final String displayName;
   final String firstName;
   final String lastName;
   late final int age;
@@ -14,7 +14,7 @@ class PatientModel {
   final String phoneNumber;
 
   PatientModel({required this.id,
-    required this.username,
+    required this.displayName,
     required this.firstName,
     required this.lastName,
     required this.age,
@@ -27,7 +27,7 @@ class PatientModel {
 
   factory PatientModel.fromJson(Map<String, dynamic> json) {
     return PatientModel(id: json['id'],
-      username: json['username'],
+      displayName: json['username'],
       firstName: json['first_name'],
       lastName: json['last_name'],
       age: json['age'],
@@ -41,7 +41,8 @@ class PatientModel {
 
   Map<String, dynamic> toJson() {
     return {
-      'user_name': username,
+      'id': id,
+      'user_name': displayName,
       'first_name': firstName,
       'last_name': lastName,
       'age': age,

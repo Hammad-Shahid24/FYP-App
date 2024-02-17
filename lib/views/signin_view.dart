@@ -69,7 +69,8 @@ class SignInView extends StatelessWidget {
                         password: passwordController.text,
                       );
                       Navigator.of(context).pushNamedAndRemoveUntil(
-                        patientHomeRoute, (route) => false,);
+                        differentUsersSelectionRoute, (route) => false,
+                      );
                     } catch (e) {
                       showDialog(
                         context: context,

@@ -6,19 +6,20 @@ class PatientDatabaseHelper{
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
   static const String _patientCollection = 'patients';
 
-  Stream<List<PatientModel>> getPatients() {
-    return _firestore.collection(_patientCollection).snapshots().map((snapshot) {
-      return List.generate(snapshot.docs.length, (index) {
-        var patient = snapshot.docs[index];
-        return PatientModel.fromJson(patient.data());
-      });
-    });
-  }
+  // Stream<List<PatientModel>> getPatients() {
+  //   return _firestore.collection(_patientCollection).snapshots().map((snapshot) {
+  //     return List.generate(snapshot.docs.length, (index) {
+  //       var patient = snapshot.docs[index];
+  //       return PatientModel.fromJson(patient.data());
+  //     });
+  //   });
+  // }
 
-  Future<void> addPatient(PatientModel patient) async {
+  Future<void> addPatient() async {
+    final id = await SharedPreferencesService().getUserId;
     await _firestore.collection(_patientCollection)
-        .doc(await SharedPreferencesService().getUserId)
-        .set(patient.toJson());
+        .doc(id)
+        .set({'id': id});
   }
 
   Future<void> removePatient(String id) async {

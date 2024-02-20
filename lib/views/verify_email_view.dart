@@ -1,14 +1,47 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:fypapp/services/auth/auth_service.dart';
 import 'package:fypapp/services/shared_preferences/sp_service.dart';
 
 import '../constants/routes.dart';
 
-class VerifyEmailView extends StatelessWidget {
-  const VerifyEmailView({super.key});
+class VerifyEmailView extends StatefulWidget {
+  const VerifyEmailView({Key? key}) : super(key: key);
+
+  @override
+  _VerifyEmailViewState createState() => _VerifyEmailViewState();
+}
+
+class _VerifyEmailViewState extends State<VerifyEmailView> {
+  late final bool isDoctor;
+  @override
+  void initState() {
+    super.initState();
+    checkEmailVerification();
+  }
+
+  void checkEmailVerification() {
+    final FirebaseAuth _auth = FirebaseAuth.instance;
+    _auth.authStateChanges().listen((User? user) {
+      if (user != null && user.emailVerified) {
+        SharedPreferencesService.start().saveAuthId(user.uid);
+        SharedPreferencesService.start().saveIsDoctor(isDoctor);
+        isDoctor
+            ? Navigator.of(context).pushNamedAndRemoveUntil(
+          doctorFormRoute, (route) => false,
+        )
+            : Navigator.of(context).pushNamedAndRemoveUntil(
+          patientFormRoute, (route) => false,
+        );
+      }
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
+    final Map<String, dynamic> args = ModalRoute.of(context)!.settings.arguments as Map<String, dynamic>;
+    isDoctor = args['isDoctor'];
+
     return Scaffold(
       appBar: AppBar(
         title: const Text('Verify email'),
@@ -20,65 +53,33 @@ class VerifyEmailView extends StatelessWidget {
           children: [
             const Text(
               "We've sent you an email verification."
-              " Please open it to verify your account.\n"
-              "If you haven't received a verification email yet,"
-              " press the button below\nProceed to the Login if you've verified you're Email Address.",
+                  " Please open it to verify your account.\n"
+                  "If you haven't received a verification email yet,"
+                  " press the button below to resend it.",
               style: TextStyle(fontSize: 20),
             ),
-            const SizedBox(
-              height: 10,
-            ),
+            const SizedBox(height: 5,),
+            const RefreshProgressIndicator(),
+            const SizedBox(height: 5,),
+            const Text('Waiting for you the verify your email.'),
+            const SizedBox(height: 10,),
             ElevatedButton(
                 onPressed: () async {
                   await AuthService.firebase().sendEmailVerification();
                 },
-                child: const Text('Send email verification')),
-            ElevatedButton(
-                onPressed: () async {
-                  final user = AuthService.firebase().currentUser;
-                  if (user?.isEmailVerified == true) {
-                    SharedPreferencesService.start().saveAuthId(user!.uid!);
-                    SharedPreferencesService.start().saveIsPatient(true);
-                    Navigator.of(context).pushNamedAndRemoveUntil(
-                      patientFormRoute,
-                      (route) => false,
-                    );
-                  } else if (user?.isEmailVerified == false) {
-                    showDialog(
-                      context: context,
-                      builder: (context) {
-                        return AlertDialog(
-                          title: const Text('Email not verified'),
-                          content: const Text('Please verify your email'),
-                          actions: [
-                            TextButton(
-                              onPressed: () {
-                                Navigator.of(context).pop();
-                              },
-                              child: const Text('OK'),
-                            ),
-                          ],
-                        );
-                      },
-                    );
-                  } else if (user == null) {
-                    Navigator.of(context).pushNamedAndRemoveUntil(
-                      signUpeRoute,
-                      (route) => false,
-                    );
-                  }
-                },
-                child: const Text(
-                    "Press here After verifying your email Address")),
+                child: const Text('Resend verification email')),
+            const SizedBox(height: 10,),
+
             ElevatedButton(
                 onPressed: () async {
                   await AuthService.firebase().logOut();
                   Navigator.of(context).pushNamedAndRemoveUntil(
                     signUpeRoute,
-                    (route) => false,
+                        (route) => false,
                   );
                 },
-                child: const Text('Restart')),
+                child: const Text('Go to Sign up page')),
+
           ],
         ),
       ),

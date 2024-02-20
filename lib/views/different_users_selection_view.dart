@@ -36,7 +36,7 @@ class DifferentUserSelectionView extends StatelessWidget {
                             bool res = await context.read<PatientProvider>()
                                 .patientExists();
 
-                            SharedPreferencesService.start().saveIsPatient(res);
+                            // SharedPreferencesService.start().saveIsPatient(res);
                           } finally {
                             value.setLoading(false);
                             Navigator.pushNamedAndRemoveUntil(
@@ -57,7 +57,7 @@ class DifferentUserSelectionView extends StatelessWidget {
                             bool res = await context.read<DocProvider>()
                                 .doctorExists();
                             if (res) {
-                              SharedPreferencesService.start().saveIsPatient(res);
+                              // SharedPreferencesService.start().saveIsPatient(res);
                               SharedPreferencesService.start().saveIsFormFilled(true);
                             }
 

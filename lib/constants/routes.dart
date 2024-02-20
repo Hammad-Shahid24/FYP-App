@@ -8,5 +8,6 @@ const String patientRoute = '/patient/';
 const String verifyEmailRoute = '/verifyEmail';
 const String loadingViewRoute = '/loadingView';
 const String patientFormRoute = '/patientForm/';
+const String doctorFormRoute = '/doctorForm/';
 const String doctorHomeRoute = '/doctorHome/';
 const String differentUsersSelectionRoute = '/DifferentUsersSelection/';

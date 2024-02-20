@@ -11,6 +11,7 @@ class SignUpView extends StatelessWidget {
     final emailController = TextEditingController();
     final passwordController = TextEditingController();
     bool obscureText = true;
+    bool isDoctor = false;
 
     return Scaffold(
       appBar: AppBar(
@@ -46,6 +47,7 @@ class SignUpView extends StatelessWidget {
                           icon: Icon(
                             obscureText
                                 ? Icons.visibility_off
+                                // ignore: dead_code
                                 : Icons.visibility,
                           ),
                           onPressed: () {
@@ -60,6 +62,23 @@ class SignUpView extends StatelessWidget {
                   },
                 ),
                 const SizedBox(height: 20),
+                StatefulBuilder(
+                    builder: (BuildContext context, StateSetter setState) {
+                  return CheckboxListTile(
+                    title: const Text('Sign up as a doctor'),
+                    value: isDoctor,
+                    onChanged: (newValue) {
+                      setState(() {
+                        isDoctor = newValue!;
+                      });
+                    },
+                    activeColor: Colors.blue, // Set the color for the checkbox when selected
+                    checkColor: Colors.white, // Set the color for the checkmark icon
+                    controlAffinity: ListTileControlAffinity.leading, // Places the checkbox at the start
+                  );
+                }
+                ),
+                const SizedBox(height: 20),
                 ElevatedButton(
                     onPressed: () async {
                       try {
@@ -69,7 +88,11 @@ class SignUpView extends StatelessWidget {
                         );
                         await AuthService.firebase().sendEmailVerification();
                         Navigator.of(context).pushNamedAndRemoveUntil(
-                            verifyEmailRoute, (route) => false);
+                            verifyEmailRoute, (route) => false,
+                          arguments: {
+                            'isDoctor': isDoctor,
+                          }
+                        );
                       } catch (e) {
                         print(e);
                         showDialog(

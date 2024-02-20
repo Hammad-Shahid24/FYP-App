@@ -17,27 +17,41 @@ class PatientHomeView extends StatelessWidget {
       body: StreamBuilder<List<DoctorModel>>(
           stream: context.read<DocProvider>().getDocs(),
           builder: (context, snapshot) {
-            if (snapshot.connectionState == ConnectionState.waiting) {
-              return const Center(
-                child: CircularProgressIndicator(),
+            if (snapshot.hasError) {
+              var v = DateTime.now();
+              print(v);
+              return Center(
+                child: Text('An error occurred: ${snapshot.error}'),
               );
             }
-            final doctors = snapshot.data;
-            return ListView.builder(
-                itemCount: doctors!.length,
-                itemBuilder: (context, index) {
-                  final doctor = doctors[index];
-                  return DocCard(docName: doctor.name,
-                      docSpeciality: doctor.specialization,
-                      availability: doctor.availability,
-                      dutyStartTime: doctor.dutyStartTime,
-                      dutyEndTime: doctor.dutyEndTime,
-                      hospitalName: doctor.hospitalName,
-                    ontap: () {
+            switch (snapshot.connectionState) {
+              case ConnectionState.waiting:
+                return const Center(
+                  child: CircularProgressIndicator(),
+                );
+              case ConnectionState.active:
+              case ConnectionState.done:
+                final doctors = snapshot.data;
+                return ListView.builder(
+                    itemCount: doctors!.length,
+                    itemBuilder: (context, index) {
+                      final doctor = doctors[index];
+                      return DocCard(docName: doctor.name,
+                        docSpeciality: doctor.specialization,
+                        availability: doctor.availability,
+                        dutyStartTime: doctor.dutyStartTime,
+                        dutyEndTime: doctor.dutyEndTime,
+                        hospitalName: doctor.hospitalName,
+                        ontap: () {
 
-                    },);
-                }
-            );
+                        },);
+                    }
+                );
+              default:
+                return const Center(
+                  child: Text('Something went wrong'),
+                );
+            }
           }),
     );
   }

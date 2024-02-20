@@ -96,7 +96,7 @@ class SignInView extends StatelessWidget {
                         signUpeRoute, (route) => false);
                   },
                   child: const Text(
-                    'Haven\'t joined yet? Register here!',
+                    'Haven\'t joined yet? Sign Up here!',
                   ),
                 ),
               ],

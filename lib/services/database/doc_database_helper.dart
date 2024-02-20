@@ -32,4 +32,18 @@ class DocDatabaseHelper {
     return snapshot.exists; // Assuming `doctorId` is the unique identifier
   }
 
+  Future<void> addDoctor() async {
+    final id = await SharedPreferencesService().getUserId;
+    await _firestore.collection(_docCollection)
+        .doc(id).set({'id': id});
+  }
+
+  Future<void> updateDoctor(DoctorModel doctor) async {
+    await _firestore.collection(_docCollection).doc(doctor.id).update(doctor.toJson());
+  }
+
+  Future<void> removeDoctor(String id) async {
+    await _firestore.collection(_docCollection).doc(id).delete();
+  }
+
 }

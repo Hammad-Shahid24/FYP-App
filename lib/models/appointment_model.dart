@@ -1,12 +1,11 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
 
 class AppointmentModel {
   final String id;
   final String patientId;
   final String doctorId;
-  final Timestamp appointmentDateTime;
-  final Timestamp updatedAt;
-  final Timestamp createdAt;
+  final DateTime appointmentDateTime;
+  final DateTime updatedAt;
+  final DateTime createdAt;
   final String status;
 
   AppointmentModel({
@@ -24,9 +23,9 @@ class AppointmentModel {
       id: json['id'],
       patientId: json['patient_id'],
       doctorId: json['doctor_id'],
-      appointmentDateTime: json['appointment_date_time'],
-      updatedAt: json['updated_at'],
-      createdAt: json['created_at'],
+      appointmentDateTime: DateTime.parse(json['appointment_date_time']),
+      updatedAt: DateTime.parse(json['updated_at']),
+      createdAt: DateTime.parse(json['created_at']),
       status: json['status'],
     );
   }
@@ -36,8 +35,6 @@ class AppointmentModel {
       'patient_id': patientId,
       'doctor_id': doctorId,
       'appointment_date_time': appointmentDateTime,
-      'updated_at': updatedAt,
-      'created_at': createdAt,
       'status': status,
     };
   }

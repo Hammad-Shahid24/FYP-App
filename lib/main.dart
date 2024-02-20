@@ -1,15 +1,18 @@
 import 'package:flutter/material.dart';
 import 'package:fypapp/providers/appointment_provider.dart';
 import 'package:fypapp/providers/doc_provider.dart';
+import 'package:fypapp/providers/hospital_provider.dart';
 import 'package:fypapp/providers/loading_screen_provider.dart';
 import 'package:fypapp/providers/patient_provider.dart';
 import 'package:fypapp/providers/signin_helper_provider.dart';
 import 'package:fypapp/services/auth/auth_service.dart';
-import 'package:fypapp/services/database/appointment_database_service.dart';
+import 'package:fypapp/services/database/appointment_database_helper.dart';
 import 'package:fypapp/services/database/doc_database_helper.dart';
+import 'package:fypapp/services/database/hospital_database_helper.dart';
 import 'package:fypapp/services/database/patient_database_helper.dart';
 import 'package:fypapp/services/shared_preferences/sp_service.dart';
 import 'package:fypapp/views/different_users_selection_view.dart';
+import 'package:fypapp/views/doctor_form_view.dart';
 import 'package:fypapp/views/doctor_home_view.dart';
 import 'package:fypapp/views/patient_form_view.dart';
 import 'package:fypapp/views/patient_home_view.dart';
@@ -33,14 +36,11 @@ class MyApp extends StatelessWidget {
     return MultiProvider(
         providers: [
           ChangeNotifierProvider(create: (context) => SignInHelperProvider(SharedPreferencesService())),
-          ChangeNotifierProvider(
-              create: (context) =>
-                  AppointmentProvider(AppointmentDatabaseService())),
-          ChangeNotifierProvider(
-              create: (context) => PatientProvider(PatientDatabaseHelper())),
-          ChangeNotifierProvider(
-              create: (context) => DocProvider(DocDatabaseHelper())),
+          ChangeNotifierProvider(create: (context) => AppointmentProvider(AppointmentDatabaseService())),
+          ChangeNotifierProvider(create: (context) => PatientProvider(PatientDatabaseHelper())),
+          ChangeNotifierProvider(create: (context) => DocProvider(DocDatabaseHelper())),
           ChangeNotifierProvider(create: (context) => LoadingScreenProvider()),
+          ChangeNotifierProvider(create: (context) => HospitalProvider(HospitalDatabaseHelper()))
         ],
         child: MaterialApp(
             debugShowCheckedModeBanner: false,
@@ -57,8 +57,7 @@ class MyApp extends StatelessWidget {
               loadingViewRoute: (context) => const LoadingView(),
               patientFormRoute: (context) => const PatientFormView(),
               doctorHomeRoute: (context) => const DoctorHomeView(),
-              differentUsersSelectionRoute: (context) =>
-                  const DifferentUserSelectionView(),
+              differentUsersSelectionRoute: (context) => const DifferentUserSelectionView(),
             },
             home: FutureBuilder(
               future: AuthService.firebase().initialize(),
@@ -68,10 +67,11 @@ class MyApp extends StatelessWidget {
                     final user = AuthService.firebase().currentUser;
                     if (user != null) {
                       if (user.isEmailVerified) {
-                        if (context.watch<SignInHelperProvider>().isFormFilled) {
-                          return context.watch<SignInHelperProvider>().isPatient
-                              ? const PatientHomeView()
-                              : const DoctorHomeView();
+                        // if (context.watch<SignInHelperProvider>().isFormFilled) {
+                        if (false) {
+                          return context.watch<SignInHelperProvider>().isDoctor
+                              ? const DoctorHomeView()
+                              : const PatientHomeView();
                         } else {
                           return const PatientFormView();
                         }
@@ -79,11 +79,11 @@ class MyApp extends StatelessWidget {
                         return const VerifyEmailView();
                       }
                     } else {
-                      return const SignInView();
+                      return DoctorFormView();
                     } // No need to cast as widget
                   case ConnectionState.waiting:
                     // this finally worked
-                    context.read<SignInHelperProvider>().initializeVariables();
+                    // context.read<SignInHelperProvider>().initializeVariables();
                     return const LoadingView();
                   case ConnectionState.active:
                     return const SignUpView();
@@ -93,4 +93,5 @@ class MyApp extends StatelessWidget {
               },
             )));
   }
+
 }

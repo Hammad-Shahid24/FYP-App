@@ -1,5 +1,4 @@
 
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 
 class DocCard extends StatelessWidget {
@@ -16,8 +15,8 @@ class DocCard extends StatelessWidget {
   final String docName;
   final String docSpeciality;
   final String availability;
-  final Timestamp dutyStartTime;
-  final Timestamp dutyEndTime;
+  final TimeOfDay dutyStartTime;
+  final TimeOfDay dutyEndTime;
   final String hospitalName;
   final VoidCallback ontap;
 

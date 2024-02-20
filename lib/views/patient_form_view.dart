@@ -1,6 +1,5 @@
 
 import 'package:flutter/material.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:fypapp/constants/routes.dart';
 import 'package:fypapp/services/shared_preferences/sp_service.dart';
 import 'package:provider/provider.dart';
@@ -177,13 +176,13 @@ class _PatientFormViewState extends State<PatientFormView> {
                       gender: _gender,
                       isVerified: false,
                       // Assuming not verified initially
-                      createdAt: Timestamp.now(),
+                      createdAt: DateTime.now(),
                       // Assuming using Firestore Timestamp
-                      updatedAt: Timestamp.now(),
+                      updatedAt: DateTime.now(),
                       imei: '',
                       phoneNumber: _phoneNumber,
                     );
-                    context.read<PatientProvider>().addPatient(patient);
+                    context.read<PatientProvider>().updatePatient(patient);
                     SharedPreferencesService.start().saveIsFormFilled(true);
                     Navigator.of(context).pushNamedAndRemoveUntil(
                         patientHomeRoute, (route) => false);
@@ -197,9 +196,9 @@ class _PatientFormViewState extends State<PatientFormView> {
               ),
               ElevatedButton(
                 onPressed: () async {
-
+                  print(DateTime.now());
                 },
-                child: Text('please work'),
+                child: const Text('please work'),
               )
               // ElevatedButton(
               //     onPressed: () async {

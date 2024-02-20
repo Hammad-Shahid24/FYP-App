@@ -7,12 +7,12 @@ class PatientProvider extends ChangeNotifier{
 
   PatientProvider(this._databaseHelper);
 
-  Stream<List<PatientModel>> getPatients() {
-    return _databaseHelper.getPatients();
-  }
+  // Stream<List<PatientModel>> getPatients() {
+  //   return _databaseHelper.getPatients();
+  // }
 
-  Future<void> addPatient(PatientModel patient) async{
-    await _databaseHelper.addPatient(patient);
+  Future<void> addPatient() async{
+    await _databaseHelper.addPatient();
     notifyListeners();
   }
 

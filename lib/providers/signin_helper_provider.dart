@@ -8,7 +8,7 @@ import 'package:fypapp/services/shared_preferences/sp_service.dart';
 class SignInHelperProvider extends ChangeNotifier {
   final SharedPreferencesService _spService;
   late String userId;
-  late bool isPatient;
+  late bool isDoctor;
   late bool isFormFilled;
 
   SignInHelperProvider(this._spService) {
@@ -20,8 +20,8 @@ class SignInHelperProvider extends ChangeNotifier {
   }
 
   void initializeVariables() async {
-    isFormFilled = await _spService.isFormFilled;
-    isPatient = await _spService.isPatient;
+    isFormFilled = await _spService.getIsFormFilled;
+    isDoctor = await _spService.getIsDoctor;
     userId = await _spService.getUserId;
     notifyListeners();
   }

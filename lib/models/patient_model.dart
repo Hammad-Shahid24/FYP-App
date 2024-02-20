@@ -1,15 +1,13 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
-
 class PatientModel {
   final String id;
-  late final String displayName;
+  final String displayName;
   final String firstName;
   final String lastName;
-  late final int age;
-  late final String gender;
+  final int age;
+  final String gender;
   final bool isVerified;
-  final Timestamp createdAt;
-  final Timestamp updatedAt;
+  final DateTime createdAt;
+  final DateTime updatedAt;
   final String imei;
   final String phoneNumber;
 
@@ -51,4 +49,5 @@ class PatientModel {
       'imei': imei
     };
   }
+
 }

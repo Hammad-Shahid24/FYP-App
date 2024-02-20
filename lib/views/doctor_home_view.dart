@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:fypapp/components/doc_card.dart';
 import 'package:fypapp/models/appointment_model.dart';
 import 'package:provider/provider.dart';
+import '../components/doc_card.dart';
 import '../providers/appointment_provider.dart';
 
 class DoctorHomeView extends StatelessWidget {
@@ -33,9 +33,9 @@ class DoctorHomeView extends StatelessWidget {
                   return DocCard(docName: appointment.id,
                     docSpeciality: appointment.doctorId,
                     availability: appointment.patientId,
-                    dutyStartTime: appointment.appointmentDateTime,
-                    dutyEndTime: appointment.createdAt,
-                    hospitalName: appointment.status,
+                    dutyStartTime: TimeOfDay.fromDateTime(appointment.updatedAt),
+                    dutyEndTime: TimeOfDay.fromDateTime(appointment.createdAt),
+                    hospitalName: (appointment.status),
                     ontap: () {},);
                 },
               );
@@ -45,7 +45,6 @@ class DoctorHomeView extends StatelessWidget {
             }
           },
         )
-
 
     );
   }

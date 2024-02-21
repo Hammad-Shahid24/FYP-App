@@ -2,7 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:fypapp/components/doc_card.dart';
 import 'package:fypapp/models/doctor_model.dart';
 import 'package:provider/provider.dart';
+import '../constants/routes.dart';
 import '../providers/doc_provider.dart';
+import '../services/auth/auth_service.dart';
+import '../services/shared_preferences/sp_service.dart';
 
 class PatientHomeView extends StatelessWidget {
   const PatientHomeView({super.key});
@@ -13,13 +16,24 @@ class PatientHomeView extends StatelessWidget {
       appBar: AppBar(
         title: const Text('Patient\'s View'),
         centerTitle: true,
+        actions: [
+          IconButton(
+            icon: const Icon(Icons.logout),
+            onPressed: () {
+              AuthService.firebase().logOut();
+              SharedPreferencesService.start().resetSharedPreferences();
+              Navigator.of(context).pushNamedAndRemoveUntil(
+                signInRoute,
+                    (route) => false,
+              );
+            },
+          ),
+        ],
       ),
       body: StreamBuilder<List<DoctorModel>>(
           stream: context.read<DocProvider>().getDocs(),
           builder: (context, snapshot) {
             if (snapshot.hasError) {
-              var v = DateTime.now();
-              print(v);
               return Center(
                 child: Text('An error occurred: ${snapshot.error}'),
               );
@@ -39,8 +53,8 @@ class PatientHomeView extends StatelessWidget {
                       return DocCard(docName: doctor.name,
                         docSpeciality: doctor.specialization,
                         availability: doctor.availability,
-                        dutyStartTime: doctor.dutyStartTime,
-                        dutyEndTime: doctor.dutyEndTime,
+                        dutyStartTime: doctor.dutyStartTime as TimeOfDay,
+                        dutyEndTime: doctor.dutyEndTime as TimeOfDay,
                         hospitalName: doctor.hospitalName,
                         ontap: () {
 

@@ -11,20 +11,20 @@ class SharedPreferencesService {
     _prefs = await SharedPreferences.getInstance();
   }
 
-  Future<String> get getUserId async {
+  Future<String?> get getUserId async {
     await _initialize();
-    return _prefs.getString('firebaseAuthId')!;
+    return _prefs.getString('firebaseAuthId');
   }
 
-  Future<bool> get getIsDoctor async {
+  Future<bool?> get getIsDoctor async {
     await _initialize();
-    return _prefs.getBool('isPatient')!;
+    return _prefs.getBool('isDoctor');
   }
 
-  Future<bool> get getIsFormFilled async {
-    await _initialize();
-    return _prefs.getBool('formFilled')!;
-  }
+  // Future<bool?> get getIsFormFilled async {
+  //   await _initialize();
+  //   return _prefs.getBool('formFilled');
+  // }
 
   void saveAuthId(String value) async {
     await _initialize();
@@ -36,15 +36,15 @@ class SharedPreferencesService {
     await _prefs.setBool('isDoctor', value);
   }
 
-  void saveIsFormFilled(bool value) async{
-    await _initialize();
-    await _prefs.setBool('formFilled', value);
-  }
+  // void saveIsFormFilled(bool value) async{
+  //   await _initialize();
+  //   await _prefs.setBool('formFilled', value);
+  // }
 
   void resetSharedPreferences() async{
     await _initialize();
-    // await _prefs.remove('firebaseAuthId');
-    // await _prefs.remove('isPatient');
+    await _prefs.remove('firebaseAuthId');
+    await _prefs.remove('isDoctor');
     // await _prefs.remove('formFilled');
     await _prefs.clear();
   }

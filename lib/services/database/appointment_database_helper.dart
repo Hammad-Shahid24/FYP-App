@@ -14,7 +14,7 @@ class AppointmentDatabaseService {
   }
 
   Future<List<AppointmentModel>> getPatientAppointments() async {
-    String patientId = await SharedPreferencesService().getUserId;
+    String? patientId = await SharedPreferencesService().getUserId;
     final snapshot = await appointmentCollection.where('patient_id', isEqualTo: patientId).get();
     return List.generate(snapshot.docs.length, (index) {
       return AppointmentModel.fromJson(snapshot.docs[index].data() as Map<String, dynamic>);
@@ -22,7 +22,7 @@ class AppointmentDatabaseService {
   }
 
   Future<List<AppointmentModel>> getDoctorAppointments() async {
-    String docId = await SharedPreferencesService().getUserId;
+    String? docId = await SharedPreferencesService().getUserId;
     final snapshot = await appointmentCollection.where('doctor_id', isEqualTo: docId).get();
     return List.generate(snapshot.docs.length, (index) {
       return AppointmentModel.fromJson(snapshot.docs[index].data() as Map<String, dynamic>);

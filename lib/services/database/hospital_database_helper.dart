@@ -3,7 +3,7 @@ import 'package:fypapp/models/hospital_model.dart';
 
 class HospitalDatabaseHelper {
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
-  final String _hospitalCollection = 'hopitals';
+  final String _hospitalCollection = 'hospitals';
 
   Future<List<HospitalModel>> getHospitals() async {
     QuerySnapshot querySnapshot = await _firestore.collection(_hospitalCollection).get();
@@ -12,8 +12,7 @@ class HospitalDatabaseHelper {
     }).toList();
   }
 
-  Future<HospitalModel> getHospital() async {
-      final docRef = _firestore.collection(_hospitalCollection).doc('lY59vdjMjXHi5pSYOKnE');
+  Future<HospitalModel> getHospital(DocumentReference docRef) async {
       final snapshot = await docRef.get();
       return HospitalModel.fromJson(snapshot.data() as Map<String, dynamic>);
   }

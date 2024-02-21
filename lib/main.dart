@@ -11,7 +11,6 @@ import 'package:fypapp/services/database/doc_database_helper.dart';
 import 'package:fypapp/services/database/hospital_database_helper.dart';
 import 'package:fypapp/services/database/patient_database_helper.dart';
 import 'package:fypapp/services/shared_preferences/sp_service.dart';
-import 'package:fypapp/views/different_users_selection_view.dart';
 import 'package:fypapp/views/doctor_form_view.dart';
 import 'package:fypapp/views/doctor_home_view.dart';
 import 'package:fypapp/views/patient_form_view.dart';
@@ -57,41 +56,38 @@ class MyApp extends StatelessWidget {
               loadingViewRoute: (context) => const LoadingView(),
               patientFormRoute: (context) => const PatientFormView(),
               doctorHomeRoute: (context) => const DoctorHomeView(),
-              differentUsersSelectionRoute: (context) => const DifferentUserSelectionView(),
+              doctorFormRoute: (context) => const DoctorFormView(),
             },
             home: FutureBuilder(
               future: AuthService.firebase().initialize(),
               builder: (context, snapshot) {
                 switch (snapshot.connectionState) {
+                  case ConnectionState.none:
+                  case ConnectionState.waiting:
+                    context.read<SignInHelperProvider>().initializeVariables();
+                    return const LoadingView();
+                  case ConnectionState.active:
+                    return const LoadingView();
                   case ConnectionState.done:
                     final user = AuthService.firebase().currentUser;
                     if (user != null) {
                       if (user.isEmailVerified) {
-                        // if (context.watch<SignInHelperProvider>().isFormFilled) {
-                        if (false) {
-                          return context.watch<SignInHelperProvider>().isDoctor
-                              ? const DoctorHomeView()
-                              : const PatientHomeView();
+                        if (context.watch<SignInHelperProvider>().isDoctor) {
+                          return const DoctorHomeView();
                         } else {
-                          return const PatientFormView();
+                          return const PatientHomeView();
                         }
                       } else {
                         return const VerifyEmailView();
                       }
                     } else {
-                      return DoctorFormView();
-                    } // No need to cast as widget
-                  case ConnectionState.waiting:
-                    // this finally worked
-                    // context.read<SignInHelperProvider>().initializeVariables();
-                    return const LoadingView();
-                  case ConnectionState.active:
-                    return const SignUpView();
-                  case ConnectionState.none:
-                    return const LoadingView();
+                      return const SignInView();
+                    }
                 }
               },
-            )));
+            ),
+    )
+    );
   }
 
 }

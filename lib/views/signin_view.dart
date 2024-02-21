@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:fypapp/components/alert_dialog.dart';
 import 'package:fypapp/constants/routes.dart';
-
+import 'package:fypapp/providers/doc_provider.dart';
+import 'package:fypapp/services/shared_preferences/sp_service.dart';
+import 'package:provider/provider.dart';
 import '../services/auth/auth_service.dart';
 
 class SignInView extends StatelessWidget {
@@ -64,13 +66,25 @@ class SignInView extends StatelessWidget {
                 ElevatedButton(
                   onPressed: () async {
                     try {
-                      await AuthService.firebase().logIn(
+                      final authUser = await AuthService.firebase().logIn(
                         email: emailController.text,
                         password: passwordController.text,
                       );
-                      Navigator.of(context).pushNamedAndRemoveUntil(
-                        differentUsersSelectionRoute, (route) => false,
-                      );
+                      if (await context.read<DocProvider>().doctorExists()) {
+                        SharedPreferencesService.start().saveAuthId(
+                            authUser.uid!);
+                        SharedPreferencesService.start().saveIsDoctor(false);
+                        Navigator.of(context).pushNamedAndRemoveUntil(
+                            patientHomeRoute, (route) => false);
+                      } else {
+                        MyDialog(
+                          onPressed: () {
+                            Navigator.of(context).pop();
+                          },
+                          title: 'You aren\'t a patient',
+                          content: 'Try pressing the other button to sign in as a doctor',
+                          icon: Icons.warning_amber_outlined,);
+                      }
                     } catch (e) {
                       showDialog(
                         context: context,
@@ -87,9 +101,7 @@ class SignInView extends StatelessWidget {
                   },
                   child: const Text('Sign In'),
                 ),
-                const SizedBox(
-                  height: 20,
-                ),
+                const SizedBox(height: 20,),
                 TextButton(
                   onPressed: () {
                     Navigator.of(context).pushNamedAndRemoveUntil(
@@ -98,6 +110,44 @@ class SignInView extends StatelessWidget {
                   child: const Text(
                     'Haven\'t joined yet? Sign Up here!',
                   ),
+                ),
+                const SizedBox(height: 20,),
+                ElevatedButton(
+                  onPressed: () async {
+                    try {
+                      final authUser = await AuthService.firebase().logIn(
+                        email: emailController.text,
+                        password: passwordController.text,
+                      );
+                      if (await context.read<DocProvider>().doctorExists()) {
+                        SharedPreferencesService.start().saveAuthId(authUser.uid!);
+                        SharedPreferencesService.start().saveIsDoctor(true);
+                        Navigator.of(context).pushNamedAndRemoveUntil(
+                            doctorHomeRoute, (route) => false);
+                      } else {
+                        MyDialog(
+                          onPressed: () {
+                            Navigator.of(context).pop();
+                          },
+                          title: 'You aren\'t a doctor yet!',
+                          content: 'Try pressing the other button to sign in as a patient',
+                          icon: Icons.warning_amber_outlined,);
+                      }
+                    } catch (e) {
+                      showDialog(
+                        context: context,
+                        builder: (context) {
+                          return MyDialog(onPressed: () {
+                            Navigator.of(context).pop();
+                          },
+                            title: 'Error',
+                            content: e.toString(),
+                            icon: Icons.error_outline,);
+                        },
+                      );
+                    }
+                  },
+                  child: const Text('Sign In as Doctor'),
                 ),
               ],
             ),

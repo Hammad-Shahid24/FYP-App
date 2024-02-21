@@ -1,7 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:fypapp/components/alert_dialog.dart';
 import 'package:fypapp/constants/routes.dart';
+import 'package:fypapp/providers/doc_provider.dart';
+import 'package:fypapp/providers/patient_provider.dart';
 import 'package:fypapp/services/auth/auth_service.dart';
+import 'package:fypapp/services/shared_preferences/sp_service.dart';
+import 'package:provider/provider.dart';
 
 class SignUpView extends StatelessWidget {
   const SignUpView({super.key});
@@ -82,19 +86,20 @@ class SignUpView extends StatelessWidget {
                 ElevatedButton(
                     onPressed: () async {
                       try {
-                        await AuthService.firebase().createUser(
+                        final user = await AuthService.firebase().createUser(
                           email: emailController.text,
                           password: passwordController.text,
                         );
                         await AuthService.firebase().sendEmailVerification();
+                        SharedPreferencesService.start().saveAuthId(user.uid!);
+                        SharedPreferencesService.start().saveIsDoctor(isDoctor);
+                        isDoctor
+                            ? context.read<DocProvider>().addDoctor()
+                            : context.read<PatientProvider>().addPatient();
                         Navigator.of(context).pushNamedAndRemoveUntil(
                             verifyEmailRoute, (route) => false,
-                          arguments: {
-                            'isDoctor': isDoctor,
-                          }
                         );
                       } catch (e) {
-                        print(e);
                         showDialog(
                           context: context,
                           builder: (context) {

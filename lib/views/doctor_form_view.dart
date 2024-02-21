@@ -1,8 +1,11 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:fypapp/components/tooltip.dart';
+import 'package:fypapp/models/doctor_model.dart';
 import 'package:fypapp/models/hospital_model.dart';
+import 'package:fypapp/providers/doc_provider.dart';
+import 'package:fypapp/services/shared_preferences/sp_service.dart';
 import 'package:provider/provider.dart';
+import '../constants/routes.dart';
 import '../providers/hospital_provider.dart';
 
 class DoctorFormView extends StatefulWidget {
@@ -18,12 +21,27 @@ class DoctorFormViewState extends State<DoctorFormView> {
   late String name;
   late String regNumber;
   late String specialization;
-  late DocumentReference hospitalId;
+  late String hospitalId;
   late String hospitalName;
   late String availability;
-  late String dutyStartTime = 'Not selected';
-  late String dutyEndTime = 'Not selected';
   late String selectedHospital = '';
+
+  late TextEditingController _nameController;
+  late TextEditingController _regNumberController;
+  late TextEditingController _specializationController;
+  late TextEditingController _availabilityController;
+
+  TimeOfDay? dutyStart;
+  TimeOfDay? dutyEnd;
+
+  @override
+  void initState() {
+    super.initState();
+    _nameController = TextEditingController();
+    _regNumberController = TextEditingController();
+    _specializationController = TextEditingController();
+    _availabilityController = TextEditingController();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -40,7 +58,7 @@ class DoctorFormViewState extends State<DoctorFormView> {
           } else {
             if (snapshot.hasData) {
               return _buildForm(snapshot.data!);
-            } else if (snapshot.hasError){
+            } else if (snapshot.hasError) {
               return Center(child: Text('error is ${snapshot.error}'));
             } else {
               return const Center(child: Text('No data available'));
@@ -59,8 +77,11 @@ class DoctorFormViewState extends State<DoctorFormView> {
         child: SingleChildScrollView(
           child: Column(
             children: <Widget>[
-              const SizedBox(height: 10,),
+              const SizedBox(
+                height: 10,
+              ),
               TextFormField(
+                controller: _nameController,
                 decoration: const InputDecoration(
                   hintText: 'Name',
                   border: OutlineInputBorder(),
@@ -75,13 +96,16 @@ class DoctorFormViewState extends State<DoctorFormView> {
                   name = value!;
                 },
               ),
-              const SizedBox(height: 10,),
+              const SizedBox(
+                height: 10,
+              ),
               TextFormField(
+                controller: _regNumberController,
                 decoration: InputDecoration(
-                  hintText: 'Medical License Registration No.',
-                  border: const OutlineInputBorder(),
-                  suffixIcon: buildTooltip('Enter your Medical License Registration Number')
-                ),
+                    hintText: 'Medical License Registration No.',
+                    border: const OutlineInputBorder(),
+                    suffixIcon: buildTooltip(
+                        'Enter your Medical License Registration Number')),
                 validator: (value) {
                   if (value == null || value.isEmpty) {
                     return 'Please enter your registration number';
@@ -92,12 +116,16 @@ class DoctorFormViewState extends State<DoctorFormView> {
                   regNumber = value!;
                 },
               ),
-              const SizedBox(height: 10,),
+              const SizedBox(
+                height: 10,
+              ),
               TextFormField(
+                controller: _specializationController,
                 decoration: InputDecoration(
                   hintText: 'Specialization(s)',
                   border: const OutlineInputBorder(),
-                  suffixIcon: buildTooltip('E.g. Cardiologist, Neurologist, General Physician etc.'),
+                  suffixIcon: buildTooltip(
+                      'E.g. Cardiologist, Neurologist, General Physician etc.'),
                 ),
                 validator: (value) {
                   if (value == null || value.isEmpty) {
@@ -109,13 +137,16 @@ class DoctorFormViewState extends State<DoctorFormView> {
                   specialization = value!;
                 },
               ),
-              const SizedBox(height: 10,),
+              const SizedBox(
+                height: 10,
+              ),
               TextFormField(
+                controller: _availabilityController,
                 decoration: InputDecoration(
-                  hintText: 'Availability',
-                  border: const OutlineInputBorder(),
-                  suffixIcon: buildTooltip('E.g. Monday to Wednesday, Weekends only etc.')
-                ),
+                    hintText: 'Availability',
+                    border: const OutlineInputBorder(),
+                    suffixIcon: buildTooltip(
+                        'E.g. Monday to Wednesday, Weekends only etc.')),
                 validator: (value) {
                   if (value == null || value.isEmpty) {
                     return 'Please enter your availability days';
@@ -126,10 +157,15 @@ class DoctorFormViewState extends State<DoctorFormView> {
                   availability = value!;
                 },
               ),
-              const SizedBox(height: 10,),
+              const SizedBox(
+                height: 10,
+              ),
               DropdownButtonFormField<HospitalModel>(
                 hint: const Text('Select Hospital'),
-                value: selectedHospital.isNotEmpty ? hospitals.firstWhere((hospital) => hospital.name == selectedHospital) : null,
+                value: selectedHospital.isNotEmpty
+                    ? hospitals.firstWhere(
+                        (hospital) => hospital.name == selectedHospital)
+                    : null,
                 items: hospitals.map((HospitalModel hospital) {
                   return DropdownMenuItem<HospitalModel>(
                     value: hospital,
@@ -139,7 +175,7 @@ class DoctorFormViewState extends State<DoctorFormView> {
                 onChanged: (newValue) {
                   setState(() {
                     selectedHospital = newValue!.name;
-                    hospitalId = 'hopitals/${newValue.id}' as DocumentReference;
+                    hospitalId = 'hospitals/${newValue.id}';
                   });
                 },
                 validator: (value) {
@@ -150,60 +186,92 @@ class DoctorFormViewState extends State<DoctorFormView> {
                 },
                 onSaved: (value) {
                   hospitalName = value!.name;
-                  hospitalId = 'hopitals/${value.id}' as DocumentReference;
+                  hospitalId = 'hospitals/${value.id}';
                 },
               ),
-              const SizedBox(height: 10,),
-              Row(
-                children: [
-                  Expanded(
-                    child: ListTile(
-                      title: Text('Duty Start Time: $dutyStartTime'),
-                      onTap: () async {
-                        final TimeOfDay? picked = await showTimePicker(
-                          context: context,
-                          initialTime: TimeOfDay.now(),
-                        );
-                        if (picked != null) {
-                          setState(() {
-                            dutyStartTime = picked.format(context);
-                          });
-                        }
-                      },
-                    ),
-                  ),
-                  Expanded(
-                    child: ListTile(
-                      title: Text('Duty End Time: $dutyEndTime'),
-                      onTap: () async {
-                        final TimeOfDay? picked = await showTimePicker(
-                          context: context,
-                          initialTime: TimeOfDay.now(),
-                        );
-                        if (picked != null) {
-                          setState(() {
-                            dutyEndTime = picked.format(context);
-                          });
-                        }
-                      },
-                    ),
-                  ),
-                ],
+              const SizedBox(
+                height: 10,
               ),
-              const SizedBox(height: 10,),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Expanded(
+                child: ListTile(
+                  title: Text('Duty Start Time: $dutyStart'),
+                  onTap: () async {
+                    final TimeOfDay? picker = await showTimePicker(
+                      context: context,
+                      initialTime: TimeOfDay.now(),
+                    );
+                    if (picker != null && picker != dutyStart) {
+                      setState(() {
+                        dutyStart = picker;
+                      });
+                    }
+                  },
+                ),
+              ),
+              Expanded(
+                child: ListTile(
+                  title: Text('Duty End Time: $dutyEnd'),
+                  onTap: () async {
+                    final TimeOfDay? picker = await showTimePicker(
+                      context: context,
+                      initialTime: TimeOfDay.now(),
+                    );
+                    if (picker != null && picker != dutyEnd) {
+                      setState(() {
+                        dutyEnd = picker;
+                      });
+                    }
+                  },
+                ),
+              ),
+            ]
+          ),
+              const SizedBox(
+                height: 10,
+              ),
               ElevatedButton(
                 onPressed: () async {
-                  print('hopitals/$hospitalId');
+                  if (dutyStart == null || dutyEnd == null) {
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      const SnackBar(
+                        content: Text('Please select duty start and end time'),
+                      ),
+                    );
+                    return;
+                  }
                   if (_formKey.currentState!.validate()) {
                     _formKey.currentState!.save();
-                    print('hopitals/$hospitalName');
-
-                    // await DocDatabaseHelper().updateDoctor(_doctor);
-                    // Navigate to the next page or show a success message
+                    try {
+                      await context.read<DocProvider>().updateDoctor(
+                          DoctorModel(
+                            id: await SharedPreferencesService().getUserId
+                            as String,
+                            name: name,
+                            regNumber: regNumber,
+                            specialization: specialization,
+                            hospitalId: hospitalId,
+                            hospitalName: selectedHospital,
+                            availability: availability,
+                            dutyStartTime: dutyStart.toString(),
+                            dutyEndTime: dutyEnd.toString(),
+                          ));
+                      Navigator.of(context).pushNamedAndRemoveUntil(
+                          doctorHomeRoute, (route) => false);
+                    } catch (e) {
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        SnackBar(
+                          content: Text('Error: $e'),
+                        ),
+                      );
+                    }
                   }
                 },
                 child: const Text('Submit'),
               ),
+
             ],
           ),
         ),

@@ -11,10 +11,10 @@ class PatientFormView extends StatefulWidget {
   const PatientFormView({super.key});
 
   @override
-  _PatientFormViewState createState() => _PatientFormViewState();
+  PatientFormViewState createState() => PatientFormViewState();
 }
 
-class _PatientFormViewState extends State<PatientFormView> {
+class PatientFormViewState extends State<PatientFormView> {
   final _formKey = GlobalKey<FormState>();
 
   late String _displayName;
@@ -168,7 +168,7 @@ class _PatientFormViewState extends State<PatientFormView> {
                     _formKey.currentState!.save();
                     // Create a PatientModel object with the entered values
                     PatientModel patient = PatientModel(
-                      id: await SharedPreferencesService.start().getUserId,
+                      id: await SharedPreferencesService.start().getUserId as String,
                       displayName: _displayName,
                       firstName: _firstName,
                       lastName: _lastName,
@@ -183,7 +183,6 @@ class _PatientFormViewState extends State<PatientFormView> {
                       phoneNumber: _phoneNumber,
                     );
                     context.read<PatientProvider>().updatePatient(patient);
-                    SharedPreferencesService.start().saveIsFormFilled(true);
                     Navigator.of(context).pushNamedAndRemoveUntil(
                         patientHomeRoute, (route) => false);
                   }
@@ -194,12 +193,6 @@ class _PatientFormViewState extends State<PatientFormView> {
                 ),
                 child: const Text('Submit'),
               ),
-              ElevatedButton(
-                onPressed: () async {
-                  print(DateTime.now());
-                },
-                child: const Text('please work'),
-              )
               // ElevatedButton(
               //     onPressed: () async {
               //       // if (Theme.of(context).platform == TargetPlatform.android) {

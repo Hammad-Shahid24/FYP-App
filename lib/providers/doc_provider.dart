@@ -20,4 +20,16 @@ class DocProvider extends ChangeNotifier {
     return _docDatabaseHelper.doctorExists();
   }
 
+  Future<void> addDoctor() async {
+    return _docDatabaseHelper.addDoctor();
+  }
+
+  Future<void> updateDoctor(DoctorModel doctor) async {
+    return _docDatabaseHelper.updateDoctor(doctor);
+  }
+
+  Future<void> removeDoctor(String id) async {
+    return _docDatabaseHelper.removeDoctor(id);
+  }
+
 }

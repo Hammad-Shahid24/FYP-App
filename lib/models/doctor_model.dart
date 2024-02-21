@@ -1,18 +1,16 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:flutter/material.dart';
 
 class DoctorModel {
   final String id;
   final String name;
   final String regNumber;
   final String specialization;
-  final DocumentReference hospitalId;
+  final String hospitalId;
   final String hospitalName;
   final String availability;
   // final String image;
   // final String rating;
-  final TimeOfDay dutyStartTime;
-  final TimeOfDay dutyEndTime;
+  final String dutyStartTime;
+  final String dutyEndTime;
 
   DoctorModel({
     required this.id,
@@ -34,11 +32,11 @@ class DoctorModel {
           name: doc['name'],
           regNumber: doc['reg_number'],
           specialization: doc['specialization'],
-          hospitalId: doc['hospital_id'],
+          hospitalId: doc['hospital_id'].toString(),
           hospitalName: doc['hospital_name'],
           availability: doc['availability'],
-          dutyStartTime: TimeOfDay.fromDateTime(DateTime.parse(doc['duty_start_time'])),
-          dutyEndTime: TimeOfDay.fromDateTime(DateTime.parse(doc['duty_end_time'])),
+          dutyStartTime: doc['duty_start_time'],
+          dutyEndTime: doc['duty_end_time'],
         );
   }
 

@@ -30,10 +30,10 @@ class PatientDatabaseHelper{
     await _firestore.collection(_patientCollection).doc(patient.id).update(patient.toJson());
   }
 
-  Future<bool> patientExists() async {
+  Future<bool> patientExists(String id) async {
     // Replace with the actual doctor collection path and authentication logic
     final doctorRef = _firestore.collection(_patientCollection)
-        .doc(await SharedPreferencesService().getUserId);
+        .doc(id);
 
     // Replace with the appropriate field name and condition for checking doctor existence
     final snapshot = await doctorRef.get();

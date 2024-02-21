@@ -22,10 +22,10 @@ class DocDatabaseHelper {
   }
 
   // this will come in handy in the DifferentUserView
-  Future<bool> doctorExists() async {
+  Future<bool> doctorExists(String id) async {
     // Replace with the actual doctor collection path and authentication logic
     final doctorRef = _firestore.collection(_docCollection)
-        .doc(await SharedPreferencesService().getUserId);
+        .doc(id);
 
     // Replace with the appropriate field name and condition for checking doctor existence
     final snapshot = await doctorRef.get();

@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:fypapp/components/alert_dialog.dart';
 import 'package:fypapp/constants/routes.dart';
 import 'package:fypapp/providers/doc_provider.dart';
+import 'package:fypapp/providers/patient_provider.dart';
 import 'package:fypapp/services/shared_preferences/sp_service.dart';
 import 'package:provider/provider.dart';
 import '../services/auth/auth_service.dart';
@@ -70,28 +71,35 @@ class SignInView extends StatelessWidget {
                         email: emailController.text,
                         password: passwordController.text,
                       );
-                      if (await context.read<DocProvider>().doctorExists()) {
+                      if (await context.read<PatientProvider>().patientExists(authUser.uid!)) {
                         SharedPreferencesService.start().saveAuthId(
                             authUser.uid!);
                         SharedPreferencesService.start().saveIsDoctor(false);
                         Navigator.of(context).pushNamedAndRemoveUntil(
                             patientHomeRoute, (route) => false);
                       } else {
-                        MyDialog(
-                          onPressed: () {
-                            Navigator.of(context).pop();
+                        AuthService.firebase().logOut();
+                        showDialog(
+                          context: context,
+                          builder: (context) {
+                            return MyDialog(
+                              onPressed: () {
+                                Navigator.of(context).pop();
+                              },
+                              title: 'You aren\'t a patient',
+                              content: 'Try pressing the other button to sign in as a doctor',
+                              icon: Icons.warning_amber_outlined,);
                           },
-                          title: 'You aren\'t a patient',
-                          content: 'Try pressing the other button to sign in as a doctor',
-                          icon: Icons.warning_amber_outlined,);
+                        );
                       }
                     } catch (e) {
                       showDialog(
                         context: context,
                         builder: (context) {
-                          return MyDialog(onPressed: () {
-                            Navigator.of(context).pop();
-                          },
+                          return MyDialog(
+                            onPressed: () {
+                              Navigator.of(context).pop();
+                            },
                             title: 'Error',
                             content: e.toString(),
                             icon: Icons.error_outline,);
@@ -119,19 +127,27 @@ class SignInView extends StatelessWidget {
                         email: emailController.text,
                         password: passwordController.text,
                       );
-                      if (await context.read<DocProvider>().doctorExists()) {
-                        SharedPreferencesService.start().saveAuthId(authUser.uid!);
+                      if (await context.read<DocProvider>().doctorExists(authUser.uid!)) {
+                        SharedPreferencesService.start().saveAuthId(
+                            authUser.uid!);
                         SharedPreferencesService.start().saveIsDoctor(true);
                         Navigator.of(context).pushNamedAndRemoveUntil(
                             doctorHomeRoute, (route) => false);
                       } else {
-                        MyDialog(
-                          onPressed: () {
-                            Navigator.of(context).pop();
+                        AuthService.firebase().logOut();
+                        showDialog(
+                          context: context,
+                          builder: (context) {
+                            return MyDialog(
+                              onPressed: () {
+                                Navigator.of(context).pop();
+                              },
+                              title: 'You aren\'t a doctor yet!',
+                              content: 'Try pressing the other button to sign in as a patient',
+                              icon: Icons.warning_amber_outlined,);
                           },
-                          title: 'You aren\'t a doctor yet!',
-                          content: 'Try pressing the other button to sign in as a patient',
-                          icon: Icons.warning_amber_outlined,);
+                        );
+
                       }
                     } catch (e) {
                       showDialog(

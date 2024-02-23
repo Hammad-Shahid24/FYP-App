@@ -45,8 +45,9 @@ class MyApp extends StatelessWidget {
             debugShowCheckedModeBanner: false,
             title: 'Flutter Demo',
             theme: ThemeData(
-              colorScheme: const ColorScheme.light(),
+              colorScheme: ColorScheme.fromSeed(seedColor: const Color(0xFF2ca3fa)),
               useMaterial3: true,
+
             ),
             routes: {
               signInRoute: (context) => const SignInView(),

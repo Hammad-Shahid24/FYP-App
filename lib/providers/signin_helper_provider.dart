@@ -9,6 +9,7 @@ class SignInHelperProvider extends ChangeNotifier {
   final SharedPreferencesService _spService;
   late String userId;
   late bool isDoctor;
+  late bool onBoardingDone;
 
   SignInHelperProvider(this._spService) {
     initializeVariables();
@@ -21,6 +22,7 @@ class SignInHelperProvider extends ChangeNotifier {
   void initializeVariables() async {
     isDoctor = await _spService.getIsDoctor ?? false;
     userId = await _spService.getUserId ?? '';
+    onBoardingDone = await _spService.getIsOnBoardingDone ?? false;
     notifyListeners();
   }
 

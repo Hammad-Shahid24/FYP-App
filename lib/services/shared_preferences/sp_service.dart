@@ -21,10 +21,10 @@ class SharedPreferencesService {
     return _prefs.getBool('isDoctor');
   }
 
-  // Future<bool?> get getIsFormFilled async {
-  //   await _initialize();
-  //   return _prefs.getBool('formFilled');
-  // }
+  Future<bool?> get getIsOnBoardingDone async {
+    await _initialize();
+    return _prefs.getBool('onBoarding');
+  }
 
   void saveAuthId(String value) async {
     await _initialize();
@@ -36,16 +36,16 @@ class SharedPreferencesService {
     await _prefs.setBool('isDoctor', value);
   }
 
-  // void saveIsFormFilled(bool value) async{
-  //   await _initialize();
-  //   await _prefs.setBool('formFilled', value);
-  // }
+  void saveIsOnBoardingDOne(bool value) async{
+    await _initialize();
+    await _prefs.setBool('onBoarding', value);
+  }
 
   void resetSharedPreferences() async{
     await _initialize();
     await _prefs.remove('firebaseAuthId');
     await _prefs.remove('isDoctor');
-    // await _prefs.remove('formFilled');
+    await _prefs.remove('onBoarding');
     await _prefs.clear();
   }
 

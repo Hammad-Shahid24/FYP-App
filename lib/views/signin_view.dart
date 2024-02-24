@@ -19,12 +19,9 @@ class SignInView extends StatelessWidget {
 
     return Scaffold(
       appBar: AppBar(
-        title: Text(
-          'Welcome Back!',
-          style: TextStyle(
-            color: Theme.of(context).primaryColor,
-            fontWeight: FontWeight.bold,
-          ),
+        title: SvgPicture.asset(
+          'assets/logo.svg',
+          height: 120
         ),
         centerTitle: true,
       ),
@@ -34,7 +31,9 @@ class SignInView extends StatelessWidget {
           child: SingleChildScrollView(
             child: Column(
               children: <Widget>[
-                const SizedBox(height: 30,),
+                const SizedBox(
+                  height: 30,
+                ),
                 SvgPicture.asset(
                   'assets/1.svg',
                   height: 200,
@@ -60,7 +59,7 @@ class SignInView extends StatelessWidget {
                         border: const UnderlineInputBorder(),
                         suffixIcon: IconButton(
                           icon: obscureText
-                              ? Icon(Icons.visibility_off)
+                              ? const Icon(Icons.visibility_off)
                               : Icon(Icons.visibility,
                                   color: Theme.of(context).primaryColor),
                           onPressed: () {
@@ -89,8 +88,7 @@ class SignInView extends StatelessWidget {
                             .patientExists(authUser.uid!)) {
                           SharedPreferencesService.start()
                               .saveAuthId(authUser.uid!);
-                          SharedPreferencesService.start()
-                              .saveIsDoctor(false);
+                          SharedPreferencesService.start().saveIsDoctor(false);
                           Navigator.of(context).pushNamedAndRemoveUntil(
                               patientHomeRoute, (route) => false);
                         } else {
@@ -99,9 +97,7 @@ class SignInView extends StatelessWidget {
                             context: context,
                             builder: (context) {
                               return MyDialog(
-                                onPressed: () {
-                                  Navigator.of(context).pop();
-                                },
+                                onPressed: () {},
                                 title: 'You aren\'t a patient',
                                 content:
                                     'Try pressing the other button to sign in as a doctor',
@@ -115,9 +111,7 @@ class SignInView extends StatelessWidget {
                           context: context,
                           builder: (context) {
                             return MyDialog(
-                              onPressed: () {
-                                Navigator.of(context).pop();
-                              },
+                              onPressed: () {},
                               title: 'Error',
                               content: e.toString(),
                               icon: Icons.error_outline,
@@ -132,7 +126,7 @@ class SignInView extends StatelessWidget {
                         borderRadius: BorderRadius.circular(10),
                       ),
                     ),
-                    child: Text('Sign In'),
+                    child: const Text('Sign In'),
                   ),
                 ),
                 const SizedBox(height: 10),
@@ -159,9 +153,7 @@ class SignInView extends StatelessWidget {
                             context: context,
                             builder: (context) {
                               return MyDialog(
-                                onPressed: () {
-                                  Navigator.of(context).pop();
-                                },
+                                onPressed: () {},
                                 title: 'You aren\'t a doctor yet!',
                                 content:
                                     'Try pressing the other button to sign in as a patient',
@@ -175,9 +167,7 @@ class SignInView extends StatelessWidget {
                           context: context,
                           builder: (context) {
                             return MyDialog(
-                              onPressed: () {
-                                Navigator.of(context).pop();
-                              },
+                              onPressed: () {},
                               title: 'Error',
                               content: e.toString(),
                               icon: Icons.error_outline,

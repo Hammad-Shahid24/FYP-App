@@ -13,6 +13,7 @@ import 'package:fypapp/services/database/patient_database_helper.dart';
 import 'package:fypapp/services/shared_preferences/sp_service.dart';
 import 'package:fypapp/views/doctor_form_view.dart';
 import 'package:fypapp/views/doctor_home_view.dart';
+import 'package:fypapp/views/onboarding_view.dart';
 import 'package:fypapp/views/patient_form_view.dart';
 import 'package:fypapp/views/patient_home_view.dart';
 import 'package:fypapp/views/loading_view.dart';
@@ -82,7 +83,11 @@ class MyApp extends StatelessWidget {
                         return const VerifyEmailView();
                       }
                     } else {
-                      return const SignInView();
+                      if (context.watch<SignInHelperProvider>().onBoardingDone) {
+                        return const SignInView();
+                      } else {
+                        return const OnBoardingView();
+                      }
                     }
                 }
               },
